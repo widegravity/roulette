@@ -190,24 +190,31 @@ export class RouletteRenderer {
         this._ctx.save();
         this._ctx.font = 'bold 11pt sans-serif';
         this._ctx.textAlign = 'right';
-        winners.forEach((marble, rank) => {
-            this._ctx.fillStyle = marble.color;
-            const line = Math.floor(rank / perLine);
-            const y = (rank % perLine) * fontHeight;
 
-            this._ctx.fillText(`${rank === winnerRank ? '☆':'\u2714'} ${marble.name} #${rank + 1}`, startX + line * lineWidth, 20 + y);
+        winners.forEach((marble, rank) => {
+            if(rank < 5) {
+                this._ctx.fillStyle = marble.color;
+                const line = Math.floor(rank / perLine);
+                const y = (rank % perLine) * fontHeight;
+
+                this._ctx.fillText(`${rank === winnerRank ? '☆':'\u2714'} ${marble.name} #${rank + 1}`, startX + line * lineWidth, 20 + y);
+            }
         });
         this._ctx.font = '10pt sans-serif';
+
         marbles.forEach((marble, rank) => {
-            this._ctx.fillStyle = marble.color;
-            const y = ((rank + winners.length) % perLine) * fontHeight;
-            this._ctx.fillText(`${marble.name} #${rank + 1 + winners.length}`, startX + Math.floor((rank + winners.length) / perLine) * lineWidth, 20 + y);
+            if(rank < 5) {
+                this._ctx.fillStyle = marble.color;
+                const y = ((rank + winners.length) % perLine) * fontHeight;
+                this._ctx.fillText(`${marble.name} #${rank + 1 + winners.length}`, startX + Math.floor((rank + winners.length) / perLine) * lineWidth, 20 + y);
+            }
         });
         this._ctx.restore();
     }
 
     private _renderWinner({winners, winnerRank}: RenderParameters) {
         if (winners.length <= winnerRank) return;
+        if(winners.length > 5) return;
         this._ctx.save();
         this._ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         this._ctx.fillRect(this._canvas.width / 2, this._canvas.height - 168, this._canvas.width / 2, 168);
